@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info/
+.venv/
+
+# Database
+*.db
+
+# Claude Code
+.claude/
+
+# Environment
+.env
+.env.local
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Research/articles (keep in separate docs repo)
+*.html
+!index.html
+
+# Model files
+*.gguf
+*.bin
+*.pt
