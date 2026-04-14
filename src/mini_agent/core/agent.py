@@ -171,11 +171,21 @@ class MiniAgent:
                 scheduling = SchedulingToolkit()
                 self_tools.append(scheduling.set_reminder)
                 self_tools.append(scheduling.set_recurring_alert)
+                self_tools.append(scheduling.set_cron_task)
                 self_tools.append(scheduling.list_scheduled_tasks)
                 self_tools.append(scheduling.cancel_scheduled_task)
                 self_tools.append(scheduling.get_next_runs)
                 self_tools.append(scheduling.calculate_time_difference)
                 self_tools.append(scheduling.add_to_datetime)
+
+            # Add Browser tools
+            if self.config.enable_browser_tools:
+                from mini_agent.tools.browser_toolkit import BrowserToolkit
+                browser_tk = BrowserToolkit(self.config)
+                self_tools.append(browser_tk.browse_url)
+                self_tools.append(browser_tk.search_browser)
+                self_tools.append(browser_tk.extract_from_page)
+                self_tools.append(browser_tk.browser_status)
 
             # Add Discord tools
             if self.config.enable_discord_tools and self.config.discord_bot_token:

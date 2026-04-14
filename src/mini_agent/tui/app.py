@@ -240,14 +240,16 @@ class ToolsView(VerticalScroll):
             "# Tools\n\n"
             "| Tool | Status |\n"
             "|------|--------|\n"
-            "| Geometry | 🟢 Active |\n"
-            "| Scheduling | 🟢 Active |\n"
             "| File R/W | 🟢 Active |\n"
             "| Web Search | 🟢 Active |\n"
             "| Shell | 🟢 Active |\n"
+            "| Geometry | 🟢 Active |\n"
+            "| Scheduling | 🟢 Active |\n"
+            "| Browser (browser-use) | 🟢 Active |\n"
             "| Discord | 🔴 Disabled |\n"
             "| PII Guard | 🟢 Active |\n"
             "| Prompt Guard | 🟢 Active |\n"
+            "| MCP Servers | 🟢 Active |\n"
         )
 
 

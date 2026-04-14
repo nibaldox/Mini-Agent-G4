@@ -1,48 +1,46 @@
 {
-
-  "mcpServers": {
-    "sequentialthinking": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "mcp/sequentialthinking"
-      ]
+    "mcpServers": {
+        "sequentialthinking": {
+            "command": "docker",
+            "args": [
+                "run",
+                "--rm",
+                "-i",
+                "mcp/sequentialthinking"
+            ]
+        },
+        "web-search-prime": {
+            "url": "https://api.z.ai/api/mcp/web_search_prime/mcp",
+            "headers": {
+                "Authorization": "338702c03fc24d01bd6d5dc459efce4c.wXJyMIqGl6e4WT5N"
+            }
+        },
+        "web-reader": {
+            "url": "https://api.z.ai/api/mcp/web_reader/mcp",
+            "headers": {
+                "Authorization": "338702c03fc24d01bd6d5dc459efce4c.wXJyMIqGl6e4WT5N"
+            }
+        },
+        "zread": {
+            "url": "https://api.z.ai/api/mcp/zread/mcp",
+            "headers": {
+                "Authorization": "338702c03fc24d01bd6d5dc459efce4c.wXJyMIqGl6e4WT5N"
+            }
+        },
+        "chrome-devtools": {
+            "command": "npx",
+            "args": [
+                "chrome-devtools-mcp@latest"
+            ]
+        },
+        "playwright-extension": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest",
+                "--extension"
+            ]
+        }
     },
-    "web-search-prime": {
-      "url": "https://api.z.ai/api/mcp/web_search_prime/mcp",
-      "headers": {
-        "Authorization": "338702c03fc24d01bd6d5dc459efce4c.wXJyMIqGl6e4WT5N"
-      }
-    },
-    "web-reader": {
-      "url": "https://api.z.ai/api/mcp/web_reader/mcp",
-      "headers": {
-        "Authorization": "338702c03fc24d01bd6d5dc459efce4c.wXJyMIqGl6e4WT5N"
-      }
-    },
-    "zread": {
-      "url": "https://api.z.ai/api/mcp/zread/mcp",
-      "headers": {
-        "Authorization": "338702c03fc24d01bd6d5dc459efce4c.wXJyMIqGl6e4WT5N"
-      }
-    },
-    "chrome-devtools": {
-      "command": "npx",
-      "args": [
-        "chrome-devtools-mcp@latest"
-      ]
-    },
-    "playwright-extension": {
-      "command": "npx",
-      "args": [
-        "@playwright/mcp@latest",
-        "--extension"
-      ]
-    }
-
-},
     "model_provider": "lmstudio",
     "model_id": "qwen3.5-35b-a3b-claude-opus-reasoning-distilled-4.6@q8_0",
     "skills_dir": "my_skills",
@@ -61,5 +59,6 @@
     "discord_default_alert_channel": "",
     "debug_mode": true,
     "max_tool_result_tokens": 2000,
-    "model_context_window": 32000
+    "model_context_window": 32000,
+    "enable_browser_tools": true
 }

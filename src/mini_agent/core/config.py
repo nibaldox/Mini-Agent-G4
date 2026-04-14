@@ -21,6 +21,7 @@ class AgentConfig:
     enable_shell_tools: bool = True
     enable_geometry_tools: bool = True
     enable_scheduling_tools: bool = True
+    enable_browser_tools: bool = False
     max_file_length: int = 10000000
     max_file_lines: int = 100000
 
@@ -94,7 +95,7 @@ class AgentConfig:
             "user_id", "streaming", "markdown", "add_history_to_context",
             "num_history_runs", "add_datetime_to_context",
             "enable_pii_detection", "enable_prompt_injection_detection",
-            "enable_geometry_tools", "enable_scheduling_tools",
+            "enable_geometry_tools", "enable_scheduling_tools", "enable_browser_tools",
             "enable_discord_tools", "discord_bot_token", "discord_default_alert_channel",
             "debug_mode", "max_tool_result_tokens", "model_context_window"
         }
