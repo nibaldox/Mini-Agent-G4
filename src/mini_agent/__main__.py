@@ -164,6 +164,12 @@ def main():
     parser = argparse.ArgumentParser(description="Mini Agent G4")
     parser.add_argument("--mode", choices=["single", "team", "auto"], default="auto",
                         help="Run mode: single (one agent), team (multiple agents), auto (decides based on task)")
+    parser.add_argument("--web", action="store_true",
+                        help="Start the web dashboard (runs alongside the agent)")
+    parser.add_argument("--port", type=int, default=8451,
+                        help="Web dashboard port (default: 8451)")
+    parser.add_argument("--host", default="0.0.0.0",
+                        help="Web dashboard host (default: 0.0.0.0)")
     args = parser.parse_args()
 
     # Load config
@@ -174,6 +180,20 @@ def main():
     else:
         print("No config.json found, using default configuration")
         config = DEFAULT_CONFIG
+
+    # Web dashboard mode
+    if args.web:
+        from mini_agent.web import run as run_web
+        agent_instance = [None]
+
+        def agent_fn():
+            if agent_instance[0] is None:
+                agent_instance[0] = create_agent(config)
+            return agent_instance[0]
+
+        print(f"Starting MiniAgent G4 Web Dashboard on http://{args.host}:{args.port}")
+        run_web(host=args.host, port=args.port, agent_fn=agent_fn, config=config)
+        return
 
     # Check API key if needed
     api_key = get_api_key_or_none(config.model_provider)
