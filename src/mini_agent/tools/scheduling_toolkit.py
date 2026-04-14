@@ -7,6 +7,12 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from agno.tools import tool
 
+try:
+    from croniter import croniter
+    CRONITER_AVAILABLE = True
+except ImportError:
+    CRONITER_AVAILABLE = False
+
 
 @dataclass
 class ScheduledTask:
@@ -16,6 +22,7 @@ class ScheduledTask:
     description: str
     callback: Optional[Callable] = None
     interval_seconds: Optional[float] = None
+    cron_expr: Optional[str] = None
     next_run: Optional[datetime] = None
     is_recurring: bool = False
     alert_message: str = ""
@@ -65,7 +72,7 @@ class Scheduler:
         while self._running:
             now = datetime.now()
             with self._lock:
-                for task in self._tasks.values():
+                for task in list(self._tasks.values()):
                     if task.next_run and now >= task.next_run:
                         if task.callback:
                             try:
@@ -73,7 +80,14 @@ class Scheduler:
                             except Exception as e:
                                 print(f"Task {task.id} error: {e}")
 
-                        if task.is_recurring and task.interval_seconds:
+                        # Calculate next run
+                        if task.cron_expr and CRONITER_AVAILABLE:
+                            try:
+                                cron = croniter(task.cron_expr, now)
+                                task.next_run = cron.get_next(datetime)
+                            except Exception:
+                                self._tasks.pop(task.id, None)
+                        elif task.is_recurring and task.interval_seconds:
                             task.next_run = now + timedelta(seconds=task.interval_seconds)
                         else:
                             self._tasks.pop(task.id, None)
@@ -157,6 +171,53 @@ class SchedulingToolkit:
         _scheduler.add_task(task)
 
         return f"Recurring alert set: '{name}' every {interval_seconds:.0f} seconds. ID: {task_id}"
+
+    @tool
+    def set_cron_task(
+        self,
+        name: str,
+        cron_expression: str,
+        message: str = ""
+    ) -> str:
+        """Schedule a recurring task using a cron expression.
+
+        Args:
+            name: Name/identifier for this task
+            cron_expression: Cron expression (e.g. '0 9 * * *' = daily at 9am,
+                             '*/5 * * * *' = every 5 minutes,
+                             '0 * * * *' = every hour,
+                             '30 14 * * 1-5' = weekdays at 2:30pm,
+                             '0 9,18 * * *' = 9am and 6pm daily)
+            message: Optional message to show when the task fires
+
+        Returns:
+            Confirmation with next run time
+        """
+        if not CRONITER_AVAILABLE:
+            return "Error: croniter package not installed. Run: uv add croniter"
+
+        try:
+            cron = croniter(cron_expression, datetime.now())
+            next_run = cron.get_next(datetime)
+        except Exception as e:
+            return f"Error: invalid cron expression '{cron_expression}': {e}"
+
+        task_id = f"cron_{name}_{int(time.time())}"
+        task = ScheduledTask(
+            id=task_id,
+            name=name,
+            description=f"Cron task: {cron_expression}",
+            next_run=next_run,
+            cron_expr=cron_expression,
+            is_recurring=True,
+            alert_message=message or f"Cron task '{name}' fired!"
+        )
+
+        _scheduler.add_task(task)
+
+        next_str = next_run.strftime("%Y-%m-%d %H:%M:%S")
+        return (f"Cron task set: '{name}' [{cron_expression}] — next run: {next_str}. "
+                f"ID: {task_id}")
 
     @tool
     def list_scheduled_tasks(self) -> str:
